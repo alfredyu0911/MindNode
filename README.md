@@ -14,3 +14,8 @@ I might be able to keep maintain this note, so you're welcome to leave any opini
 Recommend use it on your piecemeal time.<br>
 *本筆記推薦在零碎時間使用*<br>
 <br>
+If you are not using **macOS** or **iOS** or don't want to buy [MindNode](https://mindnode.com/), you can just simply find the image file under the following location <br>
+*若你不是使用 **macOS**、**iOS** 或者不想購買 [MindNode](https://mindnode.com/)，你可以直接在以下路徑找到圖檔並使用之*<br>
+>*.mindnode/QuickLook/Preview.jpg<br>
+
+<br>
