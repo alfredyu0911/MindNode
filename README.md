@@ -1,6 +1,7 @@
 # MindNode Note
 This note is presentation as mind map by using [MindNode](https://mindnode.com/).<br>
 *這個筆記是使用 [MindNode](https://mindnode.com/) 這套軟體，以心智圖的方式呈現*<br>
+<br>
 It is use to the Graduate School Entrance Examination in Compiter Science in Taiwan<br>
 *筆記用於台灣資訊工程領域的研究所入學考試*<br>
 <br>
