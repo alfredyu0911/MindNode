@@ -8,14 +8,17 @@ It is use to the Graduate School Entrance Examination in Compiter Science in Tai
 Basically it is combined from many other resources and understanding of myself, hence there is no guarantee of the correctness.<br>
 *基本上它結合了數個資源以及我個人的理解，因此並不保證其正確性*<br>
 <br>
+Also, the content of this note has nothing to do with its importance, it might just somthing I think worth to write down<br>
+*另外，筆記中的內容不代表其重要性，可能只是一些我認為值得記錄下來的東西*<br>
+<br>
 I might be able to keep maintain this note, so you're welcome to leave any opinion.<br>
 *我可能可以繼續維護它，所以非常歡迎留下任何意見*<br>
 <br>
 Recommend use it on your piecemeal time.<br>
 *本筆記推薦在零碎時間使用*<br>
 <br>
-If you are not using **macOS** or **iOS** or don't want to buy [MindNode](https://mindnode.com/), you can just simply find the image file under the following location <br>
-*若你不是使用 **macOS**、**iOS** 或者不想購買 [MindNode](https://mindnode.com/)，你可以直接在以下路徑找到圖檔並使用之*<br>
->*.mindnode/QuickLook/Preview.jpg<br>
+For those user who are not using **macOS** or **iOS** or don't want to buy [MindNode](https://mindnode.com/), you can find the [FreeMind](https://zh.wikipedia.org/wiki/FreeMind) file which is export from [MindNode](https://mindnode.com/), under the following location <br>
+*對於不是 **macOS**、**iOS** 使用者或者不想購買 [MindNode](https://mindnode.com/) 的人，你可以在以下路徑找到從 [MindNode](https://mindnode.com/) 轉換而成的 [FreeMind](https://zh.wikipedia.org/wiki/FreeMind)* 檔案<br>
+>/FreeMind/<br>
 
 <br>
