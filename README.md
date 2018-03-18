@@ -22,3 +22,6 @@ For those user who are not using **macOS** or **iOS** or don't want to buy [Mind
 >/FreeMind/<br>
 
 <br>
+The file can be also export to following file, please leave comment or contact me if you need.<br>
+*另外也可以另外輸出成以下檔案，需要其的話請留言或聯絡我*<br>
+<img src="https://i.imgur.com/HY5ZZRe.jpg"/>
