@@ -21,7 +21,7 @@ For those user who are not using **macOS** or **iOS** or don't want to buy [Mind
 *對於不是 **macOS**、**iOS** 使用者或者不想購買 [MindNode](https://mindnode.com/) 的人，你可以在以下路徑找到從 [MindNode](https://mindnode.com/) 轉換而成的 [FreeMind](https://zh.wikipedia.org/wiki/FreeMind)* 檔案<br>
 >/FreeMind/<br>
 
-<br>
+<!-- --><br>
 The file can be also export to following file, please leave comment or contact me if you need.<br>
 *另外也可以另外輸出成以下檔案，需要其的話請留言或聯絡我*<br>
 <img src="https://i.imgur.com/HY5ZZRe.jpg"/>
