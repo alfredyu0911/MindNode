@@ -1,0 +1,64 @@
+布林代數、邏輯
+	偏序集 POS
+	Partial order set
+		關係，且具有返身、反對稱、遞移
+		Reflexive, Antisymmetric, Transitive
+	全序集 TOS
+	Total order set
+		偏序集中，任兩者之間有關係者稱之
+		a R b 或 b R a 恰一者成立
+	Hasse diagram
+		為 TOS 或 POS 的一種表示法
+		關係圖，去除返身、遞移、方向性，由下往上排列
+		拓墣排序就是將 POS 化為 TOS
+		TOS 之 Hasse diagram 必為一條 chain
+	De-Morgan’s Law
+		¬(a ∨ b) ≡ ¬a ∧ ¬b
+		¬(a ∧ b) ≡ ¬a ∨ ¬b
+	命題、一階邏輯
+		重點名詞
+			Proposition 命題
+				一個 statement 可以明確分辨 true, false 者稱之
+			Tautology 真理
+			Contradiction 矛盾
+			Converse
+				P→Q Converse Q→P
+					106 台大工科
+			量詞
+				∀ For all
+				∃ Exist
+			Functional complete
+				萬用邏輯閘
+					NAND
+				其他
+					¬ 一定要有
+					∧ ∨ 需要具備其中一個
+		常用工具
+			Generalized De-Morgan’s Law
+				¬(∀x P(x)) ≡ ∃x ¬P(x)
+				¬(∃x P(x)) ≡ ∀x ¬P(x)
+			Truth Table
+			直接帶入數值檢驗
+			其他式子
+				P→Q
+					Q 為 P 的充份條件
+						Q is sufficient for P
+					P 為 Q 的必要條件
+						P is necessary for Q
+					P↔︎Q，互為充要條件
+				P→Q 成立
+					P 為假
+					P 為真且 Q 為真
+				P→Q ≡ ¬P ∨ Q
+		常見類題
+			邏輯謎題
+				理髮師、實話謊話 etc.
+					Step by step 假設後推論有無矛盾
+			Statement 的等價、翻譯、簡化等
+				注意英文敘述
+			Boolean function 化簡、畫電路等
+				狄摩根化簡
+				卡諾圖
+			結合數論的邏輯敘述、命題
+				熟讀數論
+				交大數論考很細

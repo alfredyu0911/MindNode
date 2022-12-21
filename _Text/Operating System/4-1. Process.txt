@@ -1,0 +1,286 @@
+Process
+	Process
+		A program in execution
+		PCB (Process Control Block)
+			PID
+			Process state
+				ready, run, wait, etc.
+			PC
+			CPU register
+				stack pointer etc.
+			CPU scheduling info
+				優先權、到達時間
+			Memory mgt. info
+				base/limit register, page table etc.
+			Accounting info
+				CPU time 使用、佔用資源 etc.
+			I/O status
+		State Transition Diagram
+			5 states
+				
+					State
+						略
+					Transition
+						admit
+							由 long-term 排程挑選
+								載入 memory, ready for execution
+						dispatch
+							由 short-term 排程挑選
+								dispatch(分派) CPU to precess
+						interrupt
+							被迫放棄 CPU 使用權
+								中斷
+								插隊
+								time-out
+						wait
+							主動放棄 CPU 使用權
+						event complete
+						exit
+							Process Done or Abort
+								Resource release, but PCB not yet
+					一定要會畫
+			7 states
+				
+					State
+						Ready suspend
+							Ready in Disk
+						Block suspend
+							Block in Disk
+					Transition
+						Admit
+							視 Memory 足夠與否
+								Ready
+								Ready suspend
+						Suspend (下)
+						Block to Block suspend
+							由 medium-term 排程挑選
+								因應記憶體空間不足，將 Process 移至 Disk
+								aka Swap-in/Swap-out
+						Suspend (上)
+						Ready to Ready suspend
+							由 medium-term 排程挑選
+								1. 沒有其他方法可以獲得足夠的記憶體空間的時候實施之
+								2. 所有在 Block 的 Process，優先權皆高於 Ready 內的
+						Active (下)
+						Block suspend to Block
+							Poor design
+								1. 優先權高於 Ready suspend
+								2. OS 認為 it will become ready soon
+						Suspend (虛線)
+						Running to Ready suspend
+							Poor design
+								大概就是高優先權插隊而且記憶體空間不足需要 swap 的狀況
+					最好要會畫
+	Context switching
+		process 切換時發生，kernel 須保存、載入兩者的 PCB
+		降低 Context switching 負擔
+			增加 register (各自擁有 register set)
+				切換時不需實際 load/store data，進而加速
+			multithreading
+				需要 switch 的資料減少，進而加速
+		Dispatcher
+			功能
+				將 CPU 分派給經挑選的 process
+			dispatch latency & 步驟
+				1. Context switching
+				2. Change mode to user mode
+				3. Jump to execution
+	Scheduler
+		Long term
+			Creat to Ready
+			特徵
+				執行頻率最低
+				調控 CPU-bound、I/O-bound 的 Jobs 之混合比例
+					CPU-bound
+						大量 CPU operation 的工作
+					I/O-bound
+						大量 I/O operation 的工作
+				調控 multiprogramming degree (memory 中 process 的數量)
+			適用
+				Batch 採用
+				Real time 不用、time-sharing 不需要
+		Short term
+			Ready to Run
+			特徵
+				執行頻率最高
+				無法調控 multiprogramming degree
+				無法調控 CPU-bound、I/O-bound 的 Jobs 之混合比例
+			適用
+				所有系統皆有
+		Medium term
+			Memory and Disk, swap in/out
+			特徵
+				常見於 Time-sharing
+					因為 virtual memory
+				執行頻率中等
+				可調控 CPU-bound、I/O-bound 的 Jobs 之混合比例
+				可調控 multiprogramming degree (memory 中 process 的數量)
+			適用
+				Time-sharing 採用
+				Batch & hard real-time 不用
+	Process Control operation
+		Unix 相關的 system calls
+			fork()
+				create child process
+				success
+					回傳 0 給 child
+					回傳 PID(正值) 給 parent
+				fail
+					回傳負值
+				複製一份，並一起從下一行開始執行
+					包含 code section & data section
+					先後順序則不一定
+			wait()
+				Pause process until event occur
+			exit()
+				終止
+			execlp()
+				載入特定的 binary code 以執行
+				直接蓋掉原本的
+	特殊系統排班設計考量
+		Multiprocessors sys.
+			ASMP
+				Master-slave
+					與前面 single-processor 無異
+			SMP
+				私有 ready queue
+					會有負載平衡問題
+						push migration
+							管理者主動
+							將工作從高負載推移到低負載的CPU
+						pull migration
+							CPU 主動
+							CPU idle 時，去高負載的拉一些過來
+						Processor Affinity
+							對於 job 而言，一但被某個處理器執行了，對其即有“偏好”
+							不希望 process migration 的發生
+								因為 cost 太高
+									特別是 CPU 之間的 Cache 資料處理
+				共享 ready queue
+					會有互斥存取問題
+		Hard real-time sys.
+			Schedulable
+				簡單敘述
+					處理器是否負荷的了
+					可由週期與處理時間的比例，全部加總後簡單計算
+						因為是比例 -> 以 1 為界線判斷
+					10 秒內不可能處理完 100 個需要花 1 秒的工作
+				滿足可排程的前提下才有下列兩個排班法則
+					Rate-Monotonic
+						靜態優先權
+							而且是靜態中最佳
+							週期小的優先權高
+						不一定可以滿足 Deadline
+						可插隊
+							因為 real time sys.
+					EDF
+					Earliest Deadline First
+						動態優先權
+							Deadline 越接近的優先權越高
+						若 Schedulable，則必可以滿足 Deadline
+						可插隊
+							因為 real time sys.
+		Soft Real-time sys.
+			需支援可插隊的優先權排班法則
+			不可 Aging
+			盡量降低 kernel dispatch latency
+				kernel 在維持 kernel data 正確性的前提下，基本上不給插隊
+					對 real time process 不利，
+					進而有以下兩個解決方案
+						加入 preemption point
+							在保持資料正確的原則下，在特定點允許插隊
+							效果有限
+						隨時插隊
+							必須要有互斥存取
+								也因此會有優先權反轉的問題
+									Priority Inversion, 低優先權的工作把持特定臨界區間的資料，造成高優先權的工作反過來等待
+									解決
+										Priority Inheritance
+											讓低優先權工作先承襲高的優先權，以利盡快通過臨界區間，之後再恢復原本的權值
+	CPU Scheduling
+		排班法則
+			FIFO
+				特點
+					簡單
+					公平、無飢餓
+					平均等待、完成時間最長
+			SJF
+				特點
+					最佳
+					不公平、飢餓
+					不適用於 short-term scheduler
+						因為執行頻率高，難以在短時間內估算 CPU brust time
+							如何預估
+								筆記 p.59，先略過
+			SJRF (SRTE/SRTN)
+				定義
+					Shortest Remain Jobs First
+					其實就是可插隊的 SJF
+				特點
+					比 SJF 有更小的平均等待、完成時間
+			Priority
+				特點
+					不公平、飢餓
+			RR
+				定義
+					time quantum 內未完成的工作予以 time-out
+						除此之外，基本上以 FIFO 為主
+				特點
+					Time-sharing 採用
+					公平、無飢餓
+					Preemptive
+						Time-out 就是被迫，就是插隊
+					效能取決於 time quantum
+			Multilevel Queues
+				定義
+					1. 切分成數個不同優先權的 Queue
+					2. 此為 Queue 與 Queue 之間排班
+					3. Queue 本身有自己的排班法則
+					4. Process 不可切換 Queue
+				特點
+					通常採可插隊的優先權排班法則
+					參數眾多、強調系統彈性、著重系統設計
+					不公平、易飢餓
+			Multilevel Feedback Queues
+				定義
+					Process 可以切換 Queue
+		常考現象、重要名詞
+			Starvation
+				有優先權就會發生
+				可插隊更容易發生
+			Aging
+			Non-Preemptive
+				優點
+					完工時間較可預期
+					Context switching 少
+				缺點
+					平均等待、完成時間長
+					real time 不適用
+						參考 soft real time  定義
+					time sharing 不適用
+						RR is Preemptive
+			Preemptive
+				優缺點與不可插隊相反
+			Convoy effect
+				護衛效應
+				很慢欸，全世界等你一個
+				平均等待時間大幅增加
+			Priority Inversion, Priority Inheritance
+			Processor Affinity
+	Scheduling performance
+		CPU utilization
+			CPU 執行 process 的時間 / 總時間
+			其他時間包括
+				Idle time
+				Context switching
+		Throughput
+			aka 產量
+			單位時間所完成的工作數
+		Waiting time
+			在 ready Queue 中的等待時間
+		Turnaround time
+			aka 完成時間
+			從 process 進入系統直到工作結束的時間
+		Response time
+			從 user 交付工作到系統首次回應的時間
+			對於 time-sharing sys.(user interactive app) 中非常強調

@@ -1,0 +1,133 @@
+計算機語言、指令、架構、基本概念
+	ISA
+		Hardware Information
+			Memory
+				基本知識
+					每一格大小稱為位元組 byte
+						1 byte = 8 bits
+						每一個位址稱為 byte addressing
+					基本存取單位為字組 word
+						MIPS R2000
+							1 word = 32 bits
+							1 word = 4 bytes
+				Alignment
+					word 對齊 byte address * 4
+					Endianness
+						Big Endian
+							MSB 由小的開始放
+							MSB：最左或最大的位元組
+						Little Endian
+							LSB 由小的開始放
+							LSB：最右或最小的位元組
+			Register
+				MIPS processor
+					32 general purpose register
+						$sx, $tx, $zero
+						$ax, $vx, $ra
+							arguments, return value, return address
+						$sp, $fp, $gp
+							stack pointer, 略, 略
+					special purpose register
+						PC
+							programming counter
+						Hi, Lo
+							儲存乘除法運算的高低位元
+				coprocessor 1
+				coprocessor 2
+					32 floating point register
+				spilling register
+					變數過多的時候需要在暫存器和記憶體之間 load store 的操作稱之
+			Instruction format
+				R
+					op6, rs5, rt5, rd5, shamt5, func6
+				I
+					op6, rs5, rt5, 16
+				J
+					op6, address26
+		Instruction set
+			Design principle
+				Simplicity favors regularity
+					一致才會簡單
+				Smaller is faster
+					愈小愈快
+				Male the common case fast
+					讓常發生的事件快速
+				Good design demands good compromise
+					好的設計要有好的折衷
+			CISC vs. RISC
+				ARM, MIPS
+				x86
+			Instruction style, 以 A=B+C 為例
+				ACC,  accumulator
+				(一個暫存器)
+					load address B
+						load to accumulator
+					add address C
+						add with accumulator
+					store address A
+						store from accumulator
+				Memory to memory
+					add address A, address B, address C
+				stack
+					push address B
+					push address C
+					add
+					pop address A
+				Load store (MIPS)
+					load $1, address B
+					load $2, address C
+					add $3, $1, $2
+					store $3, address A
+	常見考題
+		高階語言指令轉譯
+			if then else
+			while for loop
+			function call & recursive
+			array load store
+		machine code 轉譯
+			查表、注意數字轉換、進制
+	MIPS
+		Instructions
+			add sub addi subi
+			sll srl sra
+			and or nor xor
+				Pseudo instr. eg. not
+			beq bne slt
+				Pseudo instr. eg. bge bgt
+			lw sw
+		程式轉譯執行
+			1. 高階語言經過編譯成組合語言
+			2. 組譯器組繹成機器語言模組
+			3. Linker 連結模組和 Library 並解決位址參考
+				Label & Reference
+			4. Loader 將 machine language 載入到記憶體中的適當位置
+		Addressing mode
+			Register
+				R type
+			Immediate
+				addi etc.
+			Base/displacement
+				load store
+			PC relative
+				beq, ben etc.
+			Pseudo direct
+				j, jal
+		程序呼叫
+			用 lw, sw & $sp to 儲存、還原
+			caller save $ax, $tx
+			callee save $sx, $ra
+			push stack, stack point 用減的
+			pop stack, stack point 用加的
+		其他
+			direct branch
+				直接跳
+					compile time 就可決定的
+					內部 beq
+			indirect branch
+				間接跳
+					run time 才能決定的
+					jr $ra
+			internel branch
+				同一個 function 內部跳
+			externel branch
+				跳到其他 function 的外部跳

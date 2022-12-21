@@ -1,0 +1,103 @@
+Deadlock
+	定義、四個必要條件
+		Multual exclusion
+		Hold and wait
+		No preemption
+		Circular waiting
+	實例
+		環狀十字路口
+		梯子一上一下互卡
+		需列舉滿足四個必要條件
+	Deadlock Prevention
+		死結預防(事前)
+		破除四個必要條件
+			Multual exclusion
+				免肖想
+			Hold and wait
+				方法
+					1. 要馬一次全部拿完，要馬不拿
+					2. 先放下持有的才能申請別的
+					(哲學家晚餐問題的筷子)
+				影響
+					資源使用率下降
+			No preemption
+				影響
+					Starvation
+			Circular waiting
+				方法
+					資源給予編號
+					須按照編號、且編號遞增，方予核准
+				證明
+					矛盾證法
+						假設按此法形成循環等待
+						推導出 r0 < r0，矛盾，故假設不成立
+	Deadlock Avoidance
+		死結避免(run time)
+		Banker’s & safety Algo.
+			第一階段 Banker’s Algo.
+				針對 Precess 的 Request，先行驗證
+					需求 Need
+					系統尚存額度 Available
+					請求不能超過：需求＆額度
+				更新以下資訊供第二階段查驗
+					已分配 Alloaction
+			第二階段 safety Algo.
+				對所有的 Precess 一一檢驗
+					Time complexity
+						n process = O(n^2)
+							第一輪 n 次
+							第二輪 n-1 次
+							第三輪 n-2 次
+							...
+							第 n 輪 1 次
+						m resource = O(m)
+							每一輪檢驗後，皆需更新 Available
+						Total = O(m*n^2)
+				目的為找出 safe sequence
+					safe state
+						對申請予以核准
+					unsafe state
+						不予核准
+						不一定會發生死結
+	圖形應用
+		Resource Allocation Graph (RAG)
+			簡述
+				以有向圖紀錄行程與資源的持有、申請關係
+			簡化
+				Wait-For graph
+					去除資源的節點，簡化為行程之間的等待關係
+			結論
+				有 cycle 且 single instance 才有死結
+				否則皆無死結
+			實際操作
+				畫得很醜或不利觀察 cycle 的題目
+				e.g. [99 交大]
+					可將節點們環狀排列並重畫，有助於觀察有無 cycle
+	定理
+		對於某一種資源被行程共享
+			參數
+				該種 resource 總數 m
+				共享的 process 總數 n
+					process p1, p2, …, pn
+				max(i)：pi 對該資源的最大需求, i=1~n
+			1. max(i) ≦ m, ∀ i=1~n
+				m 不能小於所有行程最大需求的最大值
+			2. m ≧ ( ∑[max(i)-1] ) + 1
+				鴿籠概念
+				化簡移項整理後就是筆記上的式子
+			證明題滿足上述兩式，整理後即可為答案
+			[106 清大]
+	Deadlock Recorvery
+		死結恢復(事後)
+		方法
+			kill process
+				逐一砍
+				全部砍
+			資源搶奪
+		代價都很高
+			務實上大多直接忽視死結存在
+	Deadlock Detection
+		死結偵測(事後)
+			大致與 safety Algo. 相同
+				時間複雜度也相同
+		因為代價高，務實上大多直接忽視死結存在

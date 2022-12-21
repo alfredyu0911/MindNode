@@ -1,0 +1,181 @@
+圖論
+	基本或常用
+		∑ degree = 2|E|
+			i.e. 奇數 degree 的點必有偶數個
+		2-colorable ↔︎ bipartite
+			bipartite is triangle-free (不包括三角形)
+				bipartite 不含奇數長的 cycle
+			bipartite 兩堆 vertex 數相同，則有 HP
+	名詞定義
+		trail
+			edge 不重複
+			如果起點終點相同
+				稱為 circuit
+		path
+			vertex 不重複
+			如果起點終點相同
+				稱為 cycle
+		bipartite 雙分
+			分兩堆，同一堆內的頂點不相連
+			若不同堆的任兩點必有邊相連
+				稱完全雙分，記作 K(m,n)
+					edge 個數為 m*n
+			必不含奇數長的 cycle
+		biconnected
+			連通且無切點
+				cut point, 去除該點(以及與之相連的邊)則不連通
+				bridge, 去除該邊則不連通
+	特殊圖
+		Pn
+			n 個點的 path
+		Cn
+			n 個點的 cycle
+			Wn
+				Cn 中間再加一點，形成輪子(wheel)形狀
+				中間點與環上每個點都相連 (比 Cn 多一個點)
+		Qn
+			常見
+				Q0
+					點
+				Q1
+					線
+				Q2
+					面
+				Q3
+					立方體
+			edge 數
+				由圖形可簡單推論頂點數為 2^n
+				由圖形可推論每個頂點 degree 皆為 n
+				∑ degree = n*2^n = 2*|E|
+	圖論證明
+		定義下手
+		對 |V| 或 |E| 用強數學歸納法
+			切記不要加點加邊的方式
+			慣用手法
+				1. 驗證初始條件成立
+				2. 假設 < k 成立
+				3. = k 的情況，有 𝜅 個連通分量圖
+					每一個分量因為 < k，都成立
+					驗證個分量合起來也成立
+	同構
+		定義
+			兩圖之間存在一個 one to one 且 onto 的函數對應關係則稱之
+		常用
+			點、邊的個數
+			degree sequence
+			子圖結構
+			對應點關係
+			補圖
+	著色問題
+		proper coloring
+			對 vertex 上色，且相連的頂點不同色
+		𝝌 (G) = n
+			對 G 上色的最小顏色數目記作之
+			常見圖之著色
+				𝝌 (Kn) = n
+				𝝌 (K(m,n)) = 2
+				𝝌 (Pn) = 2
+				𝝌 (Cn) = 2 or 3
+					視頭尾與奇偶而定
+		planar is 4-colorable
+		P(G, 𝜆) 著色多項式
+			chromatic polynomail，定義為對 G 用 𝜆 種顏色 proper coloring 的方法數
+				𝝌 (G) = min{ 𝜆 | P(G, 𝜆) > 0 }
+					chromatic polynomail 的合法性
+						點集合非空的圖
+							用 0 個顏色上色有 0 種可能
+								P(G, 0) = 0
+								多項式常數為零
+						至少包含一個邊的圖
+							用 1 個顏色上色有 0 種可能
+								P(G, 1) = 0
+								多項式係數和為零
+						最高次項係數為 1
+				P(Kn, 𝜆) = 𝜆(𝜆-1)(𝜆-2)(𝜆-3)…(𝜆-n+1)
+				P(Pn, 𝜆) = 𝜆(𝜆-1)(𝜆-1)(𝜆-1)…(𝜆-1)
+			著色多項式分解
+				P(G, 𝜆) = P(G-e, 𝜆) - P(G•e, 𝜆)
+					G-e 拆邊
+					G•e 黏點
+					同理 P(G, 𝜆) = P(G+e, 𝜆) + P(G‧e, 𝜆)
+				P(Cn, 𝜆)
+			對於複雜的圖
+				將 G 拆解成數個 Kn
+					P(G, 𝜆) = (各個 Kn 的多項式相乘) / (所有 Kn 交集的部分)
+					各個 Kn 通常是 K3, K4
+					交集的部分通常是 K2 (直線)
+	planar 平面圖
+		定義
+			可以在平面上畫出且無交叉的稱之
+		相關名詞
+			基本區分
+				G=(V, E) 中，對於 edge e={a, b} 而言
+				恰可以在 e 上插入 vertex x，形成兩個 edge {a, x} {x, b}
+				稱之為 G 的一個基本區分
+			同胚 homeomorphic
+				若 G1, G2 可以做若干次基本區分得到另一個圖 G，稱 G1, G2 為同胚
+		若 G 與 K5 或 K(3,3) 同胚，則 G is nonplanar
+			e.g. Peterson graph
+		引入 region 概念
+			基本假設
+				G = (V, E), 頂點數 v, 邊數 e, G 為平面圖且連通
+			滿足 Euler formula：v - e + r = 2
+			推廣：e ≧ 2
+				令 region 的 degree 為該 region 與 edge 的接觸面的個數
+				假設 N 為所有 region 的 degree 和
+					N = 2e
+				圍成一個新的 region 至少需要三個邊
+				i.e. 任意 region 的 degree 至少為 3
+					N ≧ 3r
+			三式整理
+				3/2 r ≦ e ≦ 3v - 6
+					可得證 K5 & K(3,3) is nonplanar
+					若 G 不含三角形 (bipartite)
+						圍成一個新的 region 至少需要四個邊
+							N ≧ 4r
+						重新整理可得 e ≦ 2v - 4
+	Hamiltonian cycle
+		定義
+			經過圖中每個 vertex 恰一次，起終點相同
+		問題
+			環遊世界問題
+			也就是環遊城市
+		解決 (有無 HC)
+			反例證明
+				對每個 vertex 而言，恰好進出一次
+					對於 degree = 2 的點，相連的兩個邊必在 HC 中
+					若已知對某個 vertex 的兩個 edge 在 HC 中，則其他相連的邊必不在 HC 中
+			常用判斷
+				2-colorable
+					bipartite
+						兩堆 vertex 數相同
+			如果有 HC
+				畫出來就對了
+				證明 Qn 有 HC
+					這種畫不出來的只能對頂點編號，再歸納證明
+				證明 Kn* 完全有向圖有 HC
+					對 v1 ~ vp 的 path 分別與 vx 做討論
+				Kn 有 幾個相異的 HC
+	Euler circuit
+		定義
+			經過圖中每個 edge 恰一次，起終點相同
+		問題
+			七橋問題
+				結論
+					EC 不存在
+					因為所有 vertex 的 degree 皆為奇數
+		解決 (有無 EC)
+			有 EC ↔︎ all vertex degree is even
+				證明 (→)
+					EC 上任取一 edge e，因為必經過 e 一次，對於 e 的其中一個端點 v 而言，相對於 e 必定是一進一出，i.e. v 的 in degree = out degree，EC 上所有點的 degree 為偶數
+						連通
+							可得所有點的 degree 為偶數
+						不連通
+							不連通的”部分“必為孤點，degree 為 0
+				證明 (←)
+					歸納法
+			條件少、判斷簡單，很好用
+		類似
+			Euler trail
+				起點終點不同
+				Euler trail ↔︎ 奇數 degree 的點恰有 0 個或 2 個

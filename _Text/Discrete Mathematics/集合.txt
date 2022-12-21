@@ -1,0 +1,44 @@
+集合
+	重點名詞/運算
+		x ∈ A
+		A ⊆ B
+			∀x∈A → x∈B
+			定義兼證明題一般路線
+		A ⊂ B
+			A ⊆ B, A ≠ B
+			proper subset 真子集
+		A = B
+			互相包含
+			定義兼證明題一般路線
+		∅
+		U 宇集
+		power set
+			P(A) = { x | x ⊆ A}
+			A 的所有子集所集結成的集合
+			也記做 2^A (2的A次方)
+		A ∩ B
+		A ∪ B
+		Ā complement, 差集
+			Ā = U - A
+		A ⊕ B symmetric difference, 對稱差
+			A ⊕ B = (A ∪ B) - (A ∩ B)
+			(A - B) ∪ (B - A)
+		A × B
+			A × B = { (a, b) | a∈B, b∈B }
+			A cross B，稱為 A, B 的卡氏積
+	常用工具
+		Venn diagram
+		排容原理
+			相關
+				亂序禁位
+					詳見排列組合
+				onto 函數
+					詳見排列組合
+	常見類題
+		集合關係判斷
+			屬於、包含於
+			power set、卡氏積、∅，混合
+		集合運算
+			聯集交集差集對稱差
+			聯集交集與集合元素個數
+		證明題

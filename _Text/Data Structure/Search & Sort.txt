@@ -1,0 +1,298 @@
+Search & Sort
+	search
+		linear
+			sequential search 循序
+			不需事先排序
+			隨機存取或循序存取都可支援
+				也就是陣列或鏈結串列都可
+			O(n)
+				平均就是 (1+2+…+n)/n 次
+		binary
+			二分搜尋
+			需要先排序過
+				小到大
+			只能隨機存取
+				也就是陣列
+			實作
+				疊代版
+				遞迴版
+			O(logn)
+				T(n) = T(n/2) + c
+			特別注意
+				Binary Search Tree 跟 Binary Search 差很大
+				考試注意看
+	Sorting 相關名詞
+		Internal
+			資料可以一次全部拉近記憶體處理的
+		External
+			資料量太大，需要使用外部儲存空間的
+				e.g. merge sort, m-way search tree, B tree
+				部分讀取，或是需要合併的概念？
+		Stable
+			對於相同值的資料
+			排序前後的位置不改變的稱之
+				反之就是 unstable
+			意義上大概就是有沒有不必要的 swap
+	初等排序
+		Insertion Sort
+			敘述
+				把第 i 筆資料插入至前面 i-1 筆已排序資料的適當位置
+			分析
+				Best case
+					O(n)
+						小到大的已排序資料
+						比較 n 次
+							T(n) = T(n-1) + 1
+				Worst case
+					O(n^2)
+						大到小的已排序資料
+						比較 1+2+3+…+n 次
+							T(n) = T(n-1) + (n-1)
+				Average case
+					平均比較次數為 (1+…+n-1)/(n-1) = n/2
+					T(n) = T(n-1) + C*n
+						O(n^2)
+				Stable
+		Selection Sort
+			敘述
+				找出第 i~n 筆的最小值，SWAP(A[i], min)
+			分析
+				Time complexity
+					沒有 case 之分
+					比較次數都是 (n-1)+(n-2)+…+1
+						O(n^2)
+				就交換次數而言
+					每回合只交換一次，線性
+						因此適合用在大型紀錄的排序
+						像是一筆資料很多欄位那種
+				Unstable
+		Bubble Sort
+			敘述
+				兩兩比較，一格一格把大的值浮上去(後面)
+			分析
+				Best case
+					O(n)
+						小到大的已排序資料
+						比較 n 次
+				Worst case
+					O(n^2)
+						大到小的已排序資料
+						T(n) = T(n-1) + (n-1)
+				Average case
+					O(n^2)
+						每一 run 的平均比較次數為 O(n)
+				Stable
+		Shell Sort
+			略
+	Comparsion Based Sort
+		以 decision tree 描述比較的過程
+		每兩個數之間的比較，以 ≦ 關係而言，只有兩種結果
+			也就是兩個分支
+		觀察可得
+			此為 Binary tree
+			Non leaf 為鍵值之比較
+			leaf 為排序結果
+			比較次數最多為樹高 - 1
+		證明
+			對於 n 筆資料，有 n! 種排列
+				也就是說，在 decision tree 中有 n! 個 leaf
+				Binary tree 的最小高度為 [ log(n!) ] + 1
+				所以比較次數 ≧ [ log(n!) ]
+				比較次數 = Ω(logn)
+	總比較
+		
+	Linear-time sorting method
+		非 Comparsion Based
+			有機會突破 Ω(logn)
+		Radix sort (Bucket sort)
+			敘述
+				以十進制為例
+					十個桶子
+						r = 10
+				LSD
+					每回合，每筆資料從低位元開始分派到桶子
+					然後個依桶子的順序合併，單一桶內 FIFO
+				MSD
+					從高位元開始
+			分析
+				Time Complexity
+					O(d*(n+r))
+						d 為資料的最大值的位元數
+							等同做幾回合
+						每回合先分到桶子 = O(n)
+						然後個桶子再合併 = O(r)
+							r 是基底，可視為常數
+								雖然我還是覺得 FIFO 而言應該是 n
+					在限制資料範圍的前提下
+						d 可以視為常數
+				Space Complexity
+					O(n)
+						每個桶子所需的最大需求空間即 n
+				Stable
+					FIFO
+		Counting sort
+			描述
+				限制資料範圍
+				先統計各資料的出現次數
+					已知所有鍵值與其 count
+						故可算出各鍵值對應的目的 index
+					再以各個鍵值為輸出對象
+						不是以原本的輸入資料為對象
+			分析
+				O(n+k)
+	Selection Problem
+		在 n 筆資料中選擇第 i-th 筆小的
+			1. 直覺式
+				先排序再找
+					O(nlogn)
+			2. 分割式
+				類似 Quick sort 的 partition
+					找 pk，然後 partition
+					partition 完，即可知 pk 所在位置
+					看 pk 所在位置與 i 的關係
+						再往下去符合的部分繼續遞迴找
+				分析
+					基本上類似 Quick sort 的討論
+					以平均而言
+						假設都切成九比一，都落在九那邊
+							T(n) = T(9n/10) + C*n
+								case 3 of master method
+								O(n)
+						精準而言差不多
+							T(n) = 1/n * ∑ [T(s)] + C*n
+								推導略
+								O(n)
+	Heap Sort
+		描述
+			bottom up 建 Max-Heap
+			再一直 delete Max
+				因為是對同一個陣列操作
+					沒有使用外部空間
+				所以 delete 掉的鍵值，直接讓它從尾端定住
+					之後繼續操作陣列的 1~n-1 筆資料
+					等同對刪除 max 的 Heap 繼續操作
+				也就是說這邊的 delete，在不使用額外空間的情況下
+					root 先和最後一個節點交換
+					然後直接移除最後一個節點
+					然後再調整
+		分析
+			O(nlogn)
+				O(nlogn) + O(n)
+					O(n)
+						bottom up 建 Heap
+							推導參考前面
+					O(nlogn)
+						n 回合的 delete
+			Unstable
+	Merge Sort
+		敘述
+			External sort 常用的方法之一
+			Divide and conquer
+			可分為以下兩種
+				Interactive
+					倒過來的二元樹
+						由上(leaf)而下兩兩合併
+				Recursive
+					先切半，每個子串各自遞迴
+		2 way merge
+			一般操作
+			(手算或程式追蹤之類的)
+				兩組資料示意
+					P = [a, b, c, d]
+					Q = [p, q, r, s, t]
+				如何合併兩組資料
+					index or pointer i, j
+						P[i++] ≦ Q[j++]
+							true
+								輸出 P[i] 到另一陣列
+							false
+								輸出 Q[j] 到另一陣列
+						當某一條輸出結束了
+							依序把另一條的剩餘資料繼續輸出
+			分析
+				Time Complexity
+					由上述操作可知，沒有 case 之分
+						O(logn)
+							T(n) = 2*T(n/2) + C*n
+							每一輪花 O(n) 合併
+				Space Complexity
+					兩兩合併需輸出到另外的空間
+						O(n)
+		m way merge
+			by selection tree
+				winner tree
+					以 8 way 為例
+						8 組以排序的外部資料
+						先各自輸出其最小值作為樹的 leaf
+							8 leaf 恰可建成高 4 的 full binary tree
+						由底部開始兩兩比較，勝者(鍵值小)晉級
+				loser tree
+					一樣勝者晉級，只是非樹葉紀錄的是敗者的鍵值
+				分析/操作
+					tree create
+						各組各自輸出最小值
+							O(m)
+						selection tree 經 m-1 次比較得出 root
+							O(m)
+					loop n-2 次
+						root 輸出成一組新的資料(m way merge 之結果)
+						root 之晉級路線清除、其 leaf 由對應的那組資料取出下一個
+						新加入資料往上經過 樹高-1 次比較，得出整顆新的樹的最勝者
+							O(logm)
+					完成 merge
+						共 O(nlogm)
+					關鍵是每一輪只有晉級路線沿途要更新
+		Stable
+			簡單例子可推
+	Quick Sort
+		結論
+			平均最快
+			Divide and conquer
+		敘述
+			先選 pivot key
+				partition
+					即 pivot key 左邊都較小、右邊都大
+						兩個指標各指向頭(i)尾(j)
+							前面的往後找比 pk 大的 (≧)
+							後面的往前找比 pk 小的 (≦)
+						指標沒有交錯，則兩指標指向的值 SWAP
+						交錯後，靠前頭(j)的與 pk SWAP
+					每一 Run 會把 pivot key 放到正確的位置
+				每次 partition 會切出兩個部分
+					Divide
+					兩個被切出的部分的大小至關重要
+						也就是 pivot key 重要
+				partition 再往下遞迴
+		分析
+			Time Complexity
+				Best case
+					O(logn)
+						完美分割
+							T(n) = 2*T(n/2) + C*n
+							每一 Run 約 n 次
+				Worst case
+					O(n^2)
+						棒槌分割
+							即：每次的 pk 都是最大或最小值
+								每次，代表整個 input 是 sorted
+								partition 改善
+								即 pivot key 選擇優化
+									也就是避免 Worst case
+										middle of three
+											顧名思義
+										Randomized-QuickSort
+											亂數挑 pivot key
+											理論上還是會有極度雖小的狀況
+											即：還是有 worst case
+										median of medians
+											尚未參透
+							T(n) = T(n-1) + C*n
+				Average case
+					O(logn)
+						T(n) = 1/n * ∑ [T(s) + T(n-s)] + C*n
+							中間推導一大串
+			Space Complexity
+				O(logn) ~ O(n)
+					遞迴所需的 stack 空間
+			Unstable
+				隨便舉 5, 8, 5* 的簡單例子即可推論

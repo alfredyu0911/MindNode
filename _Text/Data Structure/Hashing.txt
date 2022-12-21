@@ -1,0 +1,42 @@
+Hashing
+	hashing function design
+		計算宜簡
+		碰撞宜少
+		hash table 宜均勻
+			不可局部偏重
+	名詞
+		perfect Hashing function
+			保證無碰撞
+		uniform Hashing function
+			分布均勻的雜湊函數
+	常見 hashing function
+		middle square
+			數值平方後，取中間的適當位數
+		division (Mod)
+			M 須為質數
+			M 不可整除 r^k +- a
+				k, a 為很小的正整數
+		folding addition
+			將數值依照位元分段切開、各片段再相加
+				兩種相加
+					Shift
+						直接加
+					Boundary
+						偶數片段反序後再加
+		digit analysis
+			覺得沒有嚴謹的定義，要考應該是閱讀測驗吧
+	overflow 處理
+		linear
+			從發生碰撞的 bucket 往下找空格放
+				簡單
+				hash table 充分利用
+				可能導致資料群聚，增加 searching time
+		quadatic
+			(H(x) ± i^2) % 總bucket數
+				i = 1, -1, 2, -2 一直嘗試
+					總共試 bucket 次
+				可能有資料無法存入
+		double hashing
+			(H1(x) + i*H2(x)) % 總bucket數
+		chain
+			碰撞後用 link list 串起來

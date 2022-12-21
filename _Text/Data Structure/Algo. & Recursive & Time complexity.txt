@@ -1,0 +1,108 @@
+演算法、遞迴、時間複雜度
+	Algorithm
+		定義
+			input
+			output
+			definiteness
+				明確性
+			finiteness
+				有限性
+			effectiveness
+				有效性
+	Recursive
+		考題類型
+			給問題寫出遞迴式
+			給虛擬碼，追蹤
+				執行結果
+				呼叫次數
+				時間、空間複雜度
+		常見遞迴
+			階乘
+			費氏數列
+				注意陷阱：初始條件
+			Binomial coefficient
+				二項式係數(Ｃ幾取幾)
+			Ackerman
+			GCD
+			河內塔
+				經典型
+				變形
+			字串排列組合
+	效能評估
+		Space Complexity
+			Fixed Space 需求
+				指令、變數、常數
+			Variable Space 需求
+				參數中的結構
+				eg. array, struct, class, object
+				遞迴需求 eg. stack
+		Time Complexity
+			比較總執行次數
+				trace
+				counter++
+			考量指令難易度
+				類似 CPI 的概念 (計組)
+			Asymptotic Notation
+				Notation
+					O
+						f(n) = O(g(n)) ↔︎ ∃ constant C, n0 使得 f(n) ≦ C*O(g(n)), ∀ n ≧ n0
+						上界 upper-Bound, worst case
+					Ω
+						f(n) = O(g(n)) ↔︎ ∃ constant C, n0 使得 f(n) ≧ C*O(g(n)), ∀ n ≧ n0
+						下界 lower-Bound, best case
+					Θ
+						∃ C1, C2, n0 使得 ……, ∀ n ≧ n0
+						夾擠
+					o
+						絕對上界、不等於
+					ω
+						絕對下界、不等於
+				常見成長速率等級
+					常數 < 對數 < 多項式 < 對數的指數 < 指數 < 階乘 < 指數的指數
+					constant < log < n^a < log^? < a^n < n! < a^(a^n)
+					多做題目
+				考題類型
+					Function & Notation，加減乘除或推論
+					給時間函數，求複雜度
+						展開帶入
+							小心括號
+						Master Method
+							T(n) = a T(n/b) + f(n), 將 nlogba 與  f(n) 比較
+							Case 1
+								f (n) = O(nlogba – ε)
+									T(n) = Θ(nlogba)
+										f(n) 比較小
+										正式寫法
+											存在 ε = ＿，使得 f (n) = O(nlogba – ε)
+												ε > 0
+												這是定理的使用
+							Case 2
+								f (n) = Θ(nlogba)
+									T(n) = Θ(nlogba log n)
+							Case 3
+								f (n) = Ω(nlogba + ε)
+									T(n) = Θ( f (n))
+										f(n) 比較大
+										其實還有附帶條件：∃ c 滿足 a f (n/b) ≤ c f (n)
+										正式寫法
+											存在 ε = ＿，使得 f (n) = O(nlogba – ε)，且存在 c = ＿，使得 a f (n/b) ≤ c f (n)
+												ε > 0，0 < c < 1
+												這是定理的使用
+							Extended
+								f (n) = Θ(nlogba logkn)
+								(k >= 0)
+									T(n) = Θ(nlogba logk+1n)
+										f(n) 比較大，而且剛好多了 logkn
+							多做題目
+						遞迴樹
+							類似展開帶入的做法
+								高度
+								Level Cost
+						Substitution method
+							猜測、近似處理
+						特徵方程式(離散範疇)
+					排序、比較
+						Polynomially bounded
+							aka 不超過多項式等級的
+						卡住的時候
+							兩兩比較，雙邊取 log

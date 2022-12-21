@@ -1,0 +1,89 @@
+int *x = malloc(sizeof(int));
+	x 為區域的指標變數，存放記憶體位址
+	*x 為 x 所指向的記憶體位址所存放的值
+		依址取值
+	malloc 從 heap 配置 one int 的空間，x 指向之
+		x 若宣告為區域變數，則本身存在 stack
+		*x 所在為 heap
+Thread
+	Thread (Multithreading)
+		Def.
+			lightweight process
+			the basic unit of CPU utilization
+			process 內可以有多條 thread
+				共享資料
+					code section
+					data section
+						data section 存放全域變數
+					heap
+						memory allocate (malloc, new) 的來源
+					other OS resources
+						open file
+						signal
+				私有(非共享)資料
+					programming counter
+					CPU register
+					stack
+						stack 存放區域變數
+					state
+					TID
+					function parameters
+		benefits
+			Responsiveness
+				thread 被 block 不影響整個 process，可切換給其他 thread
+			Resources Sharing
+				共享部分資料
+			Ecnomy
+				因為私有資料少，context switching 相對快、有效率
+			Scalability
+				擴展性
+				process 下的 thread 可交由不同的處理器處理、加速執行
+	Process v.s. Thread
+		
+	Multithreading 實際操作
+		以 pthread library 為例
+			pthread_attr_init(&attr);
+				get default attribute
+			pthread_create(&tid, &attr, func, func的參數);
+				建立並讓它去執行 func
+			pthread_join(tid, NULL);
+				wait until tid finish execution
+	Multithreading Model
+		(user thread數) to (kernel thread數)
+			many to one
+				意即 user thread
+			one to one
+				意即 kernel thread
+				系統負擔重
+					通常會限制 user thread 的數目
+				PC 等級之系統多為此
+					Windows, Linux
+			many to many
+				user thread ≦ kernel thread
+				折衷方案
+				製作較複雜
+				實例：sun solaris 2 以上
+	user thread v.s. kernel thread
+		user thread
+			Def.
+				執行緒管理由 user 端的 library(API) 負責
+				kernel 無介入
+				對 kernel 不知道 user thread 的存在
+			優點
+				快速
+				管理成本低
+			缺點
+				喪失 Responsiveness
+					kernel 看不到 user thread、只會把整個 process block
+				多處理器架構的效益發揮較差
+			例子
+				凡是 thread library 皆是
+		kernel thread
+			Def.
+				kernel 全權負責
+			優點
+				相反
+			缺點
+				相反
+			例子
+				現代 OS 均有

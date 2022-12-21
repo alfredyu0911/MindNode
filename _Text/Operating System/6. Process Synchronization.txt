@@ -1,0 +1,232 @@
+Process Synchronization
+	基本概念
+		process communication
+			share memory
+				快
+				適合大量資料傳遞
+				需要互斥存取控制
+					Programmer 之負擔
+			message passing
+				慢
+				適合少量資料傳輸
+		atomically
+			一氣呵成、不可分割的
+		Race condition
+			在 share memory 共享資料的情況下
+			因為行程之間的執行順序而有不同的資料結果的問題
+			解決
+				disable interrupt
+					優點
+						簡單
+						適合 uniprocessor
+					缺點
+						不適合 multiprocessor
+						風險高
+							不應該放任 user process
+							通常只有在 kernel 內部執行的時候會使用
+				critical scetion design
+			正確的 C.S. design 須滿足三個要件
+				multual exclusion
+				progress
+					no deadlock
+					不相干的不礙事
+				bounded waiting
+					no starvation
+					沒有搶先
+					定義上嚴格限制最多等 n-1 次
+	Message Passing
+		直接通訊
+			建立連結後方能通訊
+				連結單一，且不能與他人通用
+			對稱
+				雙方需要互相指定 ID 才能收/送
+			非對稱
+				接收方不用指定 ID
+		間接通訊
+			透過共享的”信箱”通訊
+			收送雙方可有多重連結，連結也可與他人通用
+		link capacity
+			link 上附屬的佇列之容量
+				佇列用於暫時保留訊息
+			1. zero capacity
+				“rendzvous” (法文：偶遇、約會)
+				等同 blocking-send
+			2. bounded capacity
+			3. unbounded capacity
+	C.S. design
+		基礎
+			SW solution
+				2 process
+					algo. 1
+						
+							違反 progress
+							當其中一者完成 C.S.、進入 R.S. (暫時無意願)，則另一者會只能進入臨界區一次
+								除非前者再度有意願，否則限制了後者的進行
+						權杖給對方
+					algo. 2
+						
+							違反 progress
+							可能 Deadlock
+						看對方意願
+					algo. 3
+						Peterson’s solution
+							
+								此為正確的 solution
+								禮讓才不會有搶先問題
+								出 C.S. 之後要宣告無意願才不會妨礙別人
+								(flag 設為 false)
+							手拿權杖且有意願才放行
+						Dekker’s solution
+							首先提出解決方案的人
+							不嚴格符合 bounded waiting 之定義
+				n process
+					bakery’s algo.
+						
+							正確
+							移除 while ( choosing[j] );
+								違反 multual exclusion
+							移除 Number[i] = 0;
+								違反 progress
+			HW instr. support
+				核心概念
+					atomically
+				Test_and_set
+					
+						違反 bounded waiting
+							先搶到鑰匙的先贏
+							沒有禮讓
+					
+						移除 waiting[i] = false;
+							違反 progress
+							別人誤以為你在等，幫你開了門、沒有其他人拿得到鑰匙
+				swap
+					大致相同，回傳值改為指標參數而已
+					阿就 SWAP，運作邏輯不同而已
+	Semaphore / Monitor
+		兩者能力相同
+			因為可以相互製作
+	Monitor
+		基礎/性質
+			本身以確保 mutual exclusion
+				任何時間點，至多一個 process 在 Monitor 內 “Active"
+					通過 Monitor、正在 C.S. is not Active
+					被 Monitor 的 condition 變數卡住 is no Active
+			高階資料結構
+				設計來給 programmer 輕鬆用的
+					“使用上” 比 Semaphore 容易
+					程式碼不一定比較短
+			condition 變數 CV
+				CV.wait
+					呼叫此函式的行程會進入等待、並加入 CV 底下附屬的佇列
+						一般來說為 FIFO
+						當有使用 priority Queue 的需求時
+							此時稱為 Conditional Monitor
+								CV.wait(priority_value)
+								CV.signal
+					Block 自己
+				CV.signal
+					呼要此函式，會從 CV 的附屬佇列中的行程移出一個並恢復之
+						佇列為空則無作用
+					Wakeup 別人
+		Dining Philosophers Problem 解決實例
+			
+		種類
+			當 condition 變數之 signal 被呼叫
+			且 Monitor 只能有一個 Active，因而有下述問題
+				原本的 P，和被喚醒的 Q 不能同時 active，故此時分為下面幾種
+					signal and wait
+						P wait Q until Q exit(finish/block) monitor
+							eg: Hoare
+						P exit and let Q execute until Q exit monitor
+							eg: Concurrent C/Pascal
+					signal and continue
+						Q 等 P
+		製作 by using Semaphore
+			
+				Monitor 本身需要確保互斥
+					所有供外部呼叫的 body 的頭尾都要提供互斥存取
+					確保只有一個 process active
+				需要滿足 Hoare 的模式 (signal and wait)
+	Reader-Writer Problem
+		只有 reader (R/R) 之間可以並行
+		依據 R/W 的優先原則又可細分
+			First reader/writer problem
+				
+					Semaphore 變數意義
+						wrt
+							semaphore of R/W & W/W
+								初始值為 1
+						readcnt
+							運作中的 reader 數目
+								初始值為 0
+						mutex
+							semaphore of 變數 "readcnt"
+								初始值為 1
+					if ( readcnt == 1 ) wait(wrt);
+						the first reader 作為斥侯先行探查
+							有 writer 則先自己卡住，後面的 reader 會卡在 mutex
+							前面沒人擋住，通過並順手把後面的 writer 都卡住
+					reader 優先於 writer
+			Second reader/writer problem
+				writer 優先於 reader
+	Semaphore
+		提供兩個 atomic operations
+		使用一個 Semaphore type 變數 S
+			wait(S)
+			signal(S)
+			用於 C.S. design 上就變得相對輕鬆
+				也可以用來控制特定順序的執行
+		Producer Consumer 問題之解決
+			
+				Semaphore 變數意義
+					mutex
+						互斥存取控制
+							初始值為 1
+					empty
+						空的空格
+							初始值為 n
+					full
+						滿的空格
+							初始值為 0
+				切記 mutex 不能先，會死結
+				Producer
+					要先確定有多的空間才能動作
+						要有空的空格
+							wait(empty)
+					動作後，使用了一個空間
+						多了一個滿的空格
+							signal(full)
+				Consumer
+					要先確定 Buffer 有東西才能動作
+						要有滿的空格
+							wait(full)
+					動作後，消耗了一個空間
+						多了一個空的空格
+							signal(empty)
+		Binary Semaphore / Conuting Semaphore
+			有無卡住 v.s. 有多少被卡住
+			以 Binary Sem. 實作 Conuting Sem.
+				重點為新增兩個變數
+					一個變數作為 counting
+					另一個作為該變數的互斥存取號誌
+		Semaphore 實作
+			Semaphore 本身的號誌值也需要互斥存取控制
+			根據種類以及實作方式共有以下四種
+				Non-Busy waiting Semaphore
+					by disable interrupt
+						
+					by C.S. design
+						進入區離開區換掉而已
+				Busy waiting Semaphore
+					by disable interrupt
+						
+							防止號誌值 S 本身的 race condition，必須讀跟寫都做互斥存取
+								所以一進來讀取 S.value 前就要關中斷
+								為了讓把持 C.S 的行程插隊，while 內要做成一開一關
+					by C.S. design
+						進入區離開區換掉而已
+				引伸
+					can busy-waiting avoid altogether?
+						雖然在 Non-Busy & by disable interrupt 的實作中確實沒有使用 busy-waiting (Spinlock)
+						但是以現今系統來說，multiprocessor 並不適合使用 disable interrupt
+							結論：無法完全避免之 (除非 singleprocessor)

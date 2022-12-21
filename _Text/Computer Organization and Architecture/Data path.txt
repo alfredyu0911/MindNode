@@ -1,0 +1,21 @@
+Data path
+	R-type
+		
+			add, sub, sll, etc.
+			op(6) | rs(5) | rt(5) | rd(5) | shamt(5) | func(6)
+	lw
+		
+			lw
+			op(6) | rs(5) | rt(5) | imm(16)
+	sw
+		
+			sw
+			op(6) | rs(5) | rt(5) | imm(16)
+	jump
+		
+			j
+			op(6) | addr(26)
+	branch
+		
+			beq, bne, etc.
+			op(6) | rs(5) | rt(5) | imm(16)

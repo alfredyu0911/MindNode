@@ -1,0 +1,215 @@
+Virtual Memory
+	由來、目的
+		早期的程式大小受限於實體記憶體空間
+			只能部分載入
+				也就是 programmer 需要對程式 overlay
+		虛擬記憶體技術使得程式大小不再受限於實體空間
+			但還是會受限於邏輯空間
+				也就是受限於 CPU 的字組大小
+		附帶好處
+			memory utilization
+			multiprogramming degree
+				不需要全部載入就可以執行
+					也就是 load 的 process 數量增加
+			I/O transfer time 較小
+				因為 load 少，單次傳輸少
+	Demand Paging
+		敘述
+			實現 virtual memory 的技術之一
+			建立在 page memory mgt. 之上
+		定義
+			只預先載入部分分頁，不需要全部
+				pure demand paging
+					完全不預先載入
+					一開始一定會 page fault
+		實作
+			page table 中新增 valid bit
+				由 O.S. 維護
+				MMU 只有使用之
+			valid
+				page 在記憶體，轉換取得實體位址
+			invalid
+				page 不在記憶體，page fault
+	page fault
+		當要存取的分頁不在記憶體的時候稱之
+		計算題
+			計算 pagefault rate, access time 等
+				計組跟 OS 的算法好像不太一樣
+				關於 service a pagefault 的部分
+					感覺恐龍的定義就是包含最後面的記憶體存取
+					題目沒講的話，計算題最好清楚標明假設
+					也就是 pagefault 的處理是否只有分頁置換
+		概念題
+			TLB, Cache 都只放部分資料
+			pagefault 就是不在記憶體！！
+				這個時候其他東西 hit 的話就媽佛了
+	綜合型的記憶體 reference 流程
+		重要元素
+			page, page table, TLB, page fault …
+		TLB
+			hit
+				即取得實體位址
+					存取記憶體取得資料
+			miss
+				page table
+					valid
+						取得實體位址
+							存取記憶體取得資料
+					invalid
+						page fault
+							page replacement
+								好了以後再查分頁表
+	存取時間
+		mili sec.
+			10^-3
+		micro sec.
+			10^-6
+		nano sec.
+			10^-9
+	Page size 減少
+		page fault ratio 上升
+			存取記憶體在不同頁的機率提高
+				page replace 的機率提高
+		page table size 上升
+			process 佔用的 pages 變多
+		I/O 次數變多
+		I/O 單次傳輸時間減少
+		內碎變小
+		Locality 越佳
+		現今趨勢為大的 page size
+	program structure
+		陣列在記憶體中的存放
+			row major
+			column major
+		循序存取陣列的方式
+			最好與存放方式一致
+				才能有效利用 Locality
+	Copy-on-Write
+		三種 fork
+			傳統 fork
+				copy 父行程的作為子行程的
+				對於以 execlp() 為目的的形成浪費
+			fork with copy-on-write
+				一開始都先共享
+				當任一方寫入發生的時候，才複製一份父行程的給子
+					這個時候才會配置頁框
+			vfork
+				virtual memory fork
+				fork 之後是共享的
+				不提供 copy-on-write
+				適用以 execlp() 為目的的 fork
+	TLB reach
+		=
+			TLB entry 數 * frame size
+			TLB entry 數 * page size
+		increase
+			TLB entry 數
+				硬體成本高
+				不夠
+			page size
+				內碎增加
+					現行解法
+						使用不同 size 的分頁
+							由 O.S. 管理
+							TLB 也必須由 O.S. 管理
+								整體而言 Z > B
+	thrashing
+		成因
+			行程的頁框分配不足
+			一直 page fault
+				搶別人的頁框
+					然後別人也 page fault
+						然後大家就互搶
+			大家都一直在等 I/O
+			CPU idle
+				為了提升使用度
+					增加 multiprogramming degree
+						然後就惡性循環
+		特徵
+			CPU utlization 急速下降
+			I/O 異常忙碌
+			process 花在 page fault 的時間大於正常執行時間
+		圖表
+			縱軸
+				CPU utlization
+			橫軸
+				multiprogramming degree
+		解決
+			降低 multiprogramming degree
+			別無他法
+		預防
+			local replacement policy
+				限制只能從自己的頁框替換
+				限縮 thrashing 的影響、不在系統擴散
+			working set model
+	Page replacement
+		流程
+			基本流程
+				選犧牲頁面 swap out
+				將所需頁面載入
+				多一次 I/O
+			改良流程
+				Page table 加入 modification bit
+					aka. dirty bit
+				若 page 未被修改過，就不需要存回 disk
+				對於未被修改過的頁面，省一次 I/O
+		重要名詞
+			Stack property
+				{ n 頁框所包含的頁面 } 是 { n+1 頁框所包含頁面} 的子集合
+				滿足則不會有 Belady Anomaly
+			Belady Anomaly
+				增加頁框，page fault 次數不降反升的情況稱之
+			thrashing
+			copy-on-write
+		replacement
+			特換法則
+				只有最佳，沒有最差
+				滿足 Stack property
+					OPT
+						選未來最晚使用的為犧牲頁面
+							無法實作
+					LRU
+						選過去最早使用的為犧牲頁面
+							往回看 last reference time 最小的
+				FIFO
+					會有 Belady Anomaly
+				LFU
+					選過去最少使用(累計)的為犧牲頁面
+						因為需要大量的硬體支援
+							所以有 LRU 近似法則
+								以 reference bit 為參考
+				MFU
+					選過去最多使用(累計)的為犧牲頁面
+				second chace
+					一般型操作規則
+						以 FIFO 為基礎，搭配 reference bit、環狀串列
+						讀寫過的頁面 ref. bit 設 1
+							參考過的
+							剛載入的
+						page fault 時
+							ref. bit = 1
+								給機會
+									依環狀串列找下一個
+							ref. bit = 0
+								即為犧牲頁面
+								replace 完成後
+									ref. bit 設 1
+									指向下一個
+					加強型
+						略
+			搭配機制
+				page buffering
+					free frame pool
+						當頁面需要寫回磁碟的時候
+						先配置予 pool 中的頁框，及早 restart process
+						之後再慢慢寫回
+					O.S. keep a list of modified pages
+						有空的時候就先把修改過的頁面寫回
+							disk idle
+							disk utilization 低
+						提高犧牲頁面為”未修改”的機率
+					free frame pool 增強型
+						再多紀錄 page 內是被配給哪個 process
+						選完犧牲頁面的時候，先檢查 pool
+							有機會直接把頁框替換上去、不用等載入
+							特別是那種剛換出去，下一次剛好又要用的情況

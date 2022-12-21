@@ -1,0 +1,61 @@
+向量空間
+	定義
+		滿足十項公設
+		太多了記憶困難，大致上可檢驗以下
+			封閉性
+			交換、結合、分配
+			零
+			單位向量
+		例子
+			singular matrix
+				不可逆 + 不可逆 未必 不可逆
+			nonsingular matrix
+				沒有“零”
+			diagonal matrix
+				是向量空間
+			real matrix
+				是向量空間
+	子空間
+		只要滿足
+			加法、純量積封閉性
+				u, v ∈ W, c, d ∈ F, cu+dv ∈ W
+			包含零向量
+				0 ∈ W
+			打字問題、底線代表向量
+	四大空間
+		kernel space
+			ker(A) = { x | Ax = 0 }
+		column space
+			CS(A) = { Ax }
+		L kernel
+		row space
+	直和
+		先略過
+	基底和維度
+		定義
+			S ⊆ V
+			S 為 V 的一組基底，滿足以下兩點
+				span(S) = V，S 生成 V
+				S 為線性獨立集
+			基底的向量個數稱為維度 dimension
+		重點定理
+			span(S) = V, S is not L.I.，則
+			可找在 S 中去掉一個 u 後仍生成 V
+			S is L.I.，S 沒有生成 V，則
+			可以在 S 外加入一個 u 後仍不生成 V
+	線性獨立、線性生成
+		檢驗方式
+			向量擺成 row
+				列運算後看有無零列
+			向量擺成 column
+				列運算至 rref，可得線性組合關係
+		證明線性獨立
+			向量 v1, v2, v3, …, vn
+			純量 c1, c2, c3, …, cn
+			起手式
+				c1v1 + c2v2 + c3v3 + … + cnvn = 0
+			終點
+				c1 = c2 = c3 = … = cn = 0
+		證明線性相依
+			終點
+				c1, c2, c3, …, cn 不全為零

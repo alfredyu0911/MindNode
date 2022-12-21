@@ -1,0 +1,116 @@
+基本概念
+	Multiprogramming
+		定義
+			系統允許多個 process 同時執行 (load in memory)
+		方法、目的
+			運用 CPU scheduling 使其能在多個行程之間切換
+			提高 CPU 使用率、減少 idle
+		種類
+			Concurrent 交互
+			Parallel 平行
+	Time sharing
+	(Multitasking)
+		Logical extension of multiprogramming
+			主要差異為頻繁切換，適合 user interactive
+		特徵
+			short response time
+				多 user
+				大型工作站服務多個端點使用者 eg. 提款機
+			RR 排班
+			採用 virtual memory
+			使用 Spooling 技術
+				使用 Disk 緩衝
+					“Buffering” 用 memory 緩衝
+				Simultaneous Peripheral Operations On-Line processing
+	Multiprocessors
+		定義
+			aka Multiprocessing, Parallel, Tightly-coupled
+			同一機器內還有多顆 processors (CPU)
+				處理器之間共用硬體資源
+				用同一個 Clock 控制時脈
+				行程間通常用 memory sharing 通訊
+		Benefits
+			Increased Throughput
+				行程可以在不同處理器上平行執行
+			Increased Reliability
+				處理器掛了還有其他顆可用
+			Economy of Scale
+				因為共用硬體資源
+		可再細分
+			SMP
+				大家都一樣、對等
+				設計重點為 Load Balancing
+				優點
+					Reliability 高
+					Throughput 高
+				缺點
+					開發複雜、設計不易
+						有互斥存取、控制需求
+			ASMP
+				不見得大家都一樣
+				通常為 Master-Slave
+				優點
+					簡單好做
+						較容易從單處理作業系統移植修改
+				缺點
+					Reliability 低
+						因為每個處理器能力不一定相同
+					Throughput 低
+						因為 Master 為效能瓶頸
+	Hand Held Sys.
+		硬體存在先天限制
+			慢速處理器
+				基於功耗與散熱問題
+			記憶體空間受限
+			顯示器尺寸小
+	Batch Sys.
+		早期將不重要的、可批次的工作留到冷門時段執行、提升冷門時段的使用率
+	Real-Time Sys.
+		Hard real-time sys.
+			Def
+				Critical task complete on time
+			特點
+				所有延遲時間列入考量、從嚴評估
+				任何拉長處理時間或無法預測的都少採用或不用
+					Disk 少用或不用
+					Virtual Memory is never used 
+			排班
+				可排班與否、是否滿足 Deadline
+					Monotonic
+					EDF
+			務實
+				現行商用作業系統皆不支援
+				不可與 time sharing 共存
+					因為 virtual memory
+				盡量減少 kernel 介入干預
+					或者不存在 OS, 使用嵌入式系統
+		Soft real-time sys.
+			Def
+				Real time process 保持高優先權
+				維持優先權(不衰退)直到完成工作
+			特點
+				盡量降低 kernel dispatch latency
+				可使用 virtual memory
+					前提為 All Real time process pages 在完成前都不可以被 swap out
+				No Aging
+			排班
+				要可以插隊 (preemptive priority)
+				盡量降低 kernel dispatch latency
+			務實
+				現行商用作業系統皆支援
+					eg. Windows, UNIX, Linux etc.
+				可與 time sharing 共存
+	Distributed Sys.
+		定義
+			aka Loosely-coupled
+			簡單講就是不同的獨立機器集合而成的系統
+			“Processor” 之間以 Network 通訊連接
+		優點
+			Throughput 提升
+			Reliability 提升
+			Resources sharing
+				Client-server module
+					Computing server
+					File server
+					Mail server etc.
+			Communication needs

@@ -1,0 +1,223 @@
+Memory & Virtual Memory
+	記憶體階層架構有效的基本原因
+		locality
+			temproal loaclity
+				對同一個項目而言
+				被存取了之後，之後很快會再被存取
+					e.g. 迴圈
+			spatial locality
+				對一群項目而言
+				某一項目存取之後，附近的有很高機會也會被存取
+					e.g. 連續指令
+	Cache
+		音：cash
+		SRAM
+			(meory = DRAM)
+		資料傳輸單位為 Block
+			aka line
+			基本存取單位
+		種類
+			direct mapped
+				記憶體位址唯一對應到快取的 Block
+			set associative
+				記憶體位址對應到快取的某個 set
+					set 裡面包含數個 Block
+						2-way : 2 block per set
+						n-way : n block per set
+				實際搜尋的時候，需要比對同一個 set 的每個 block 的 tag
+			fully associative
+				對應到整個快取
+				就是只有一個 set
+	基本位址轉換
+		二進位系統、二的冪次方
+			除或是 mod 都可以用 shift
+			就是直接切 bit 即可
+		CPU 送出 Byte address
+		由 Block size 可換得 Block address
+			e.g. 4-Byte per Block
+				Block address = Byte address / 4
+		用 Block address 存取 Cache
+			經由 number of Cache blocks
+			可以知道 Block address 對應到 Cache 的哪一個 entry(block)
+				e.g.
+					0~15 位址對應到 4-blocks Cache
+					0, 4, 8, 12 對到 Cache Block[0]
+					1, 5, 9, 13 對到 Cache Block[1]
+					其他類推
+				也就是 Block address % Cache blocks 可轉換得 Cache block 的 index
+		因為多個實體位址對應到同一個 Cache Block
+			所以需要再以 tag 欄位辨別
+			經過上面兩個部分的分割，剩下的就是 tag
+		集合式關聯快取
+			對於 n-way associative
+				即：每 n 個 Block 為一個集合(set)
+				也就是快取的 entries 減少
+					多個 Block 合在一個 entry 內
+					總 Block 數並未改變
+					對到同一個 entry 的實體空間變多了
+						tag 欄位要變多(相對於 direct mapped)
+	基本流程
+		Byte addr. → Block addr. → Block index in Cache → tag 比對 & hit → 取得資料 → 送回給 CPU
+		集合式關聯快取
+			2^k-way 就把 index 的 k 個 bit 挖過去分給 tag
+		題目可能以不同的單位敘述
+			如：word address
+			轉換的時候前後一致即可
+	locality 概念引入
+		當一個 Block 包含的資料越多的時候
+			明顯的，每次存取快取，命中的機率會增加
+			相對的，Block 越大，傳輸時間越長
+				也就是 miss penalty 越多
+			另外 Block 過大的時後，反而會將不相干的資料留在快取
+				區域性反降
+			也就是說 Block 加大的好處，只有在一定(合理)範圍內會成立
+	快取寫入問題
+		主要為快取與主要記憶體之間的資料同步問題
+			inconsistent
+		write hit
+			write through
+				寫回快取，也寫回記憶體
+				簡單、慢
+			write back
+				先寫快取，稍後寫回記憶體
+					此時需要一個 dirty bit 輔助標記
+				複雜、快
+		write miss
+			write allocate
+				先把對應的區塊抓回快取後再寫
+			no write allocate (write around)
+				繞過快取，直接寫回記憶體
+	分離式快取
+		split cache
+			通常為指令快取與資料快取之分離
+			指令與資料可以平行存取
+				頻寬加大
+				整體速度提升
+				損失區域性的優點
+		combined cache
+			保留區域性但頻寬小
+			實務上 split cache 的頻寬提升 Z > B
+		三種設計
+			one word wide
+				讀取、傳輸，頻寬都是 one word
+			wide
+				讀取、傳輸，頻寬一起加大
+			interleaved
+				藉由 interleaved memory 來加大讀取頻寬
+					實體記憶體區分為數個 bank
+						不同 bank 可以平行讀取
+					最後透過同一個 bus 輪流傳輸
+					改善讀取時間
+	3C
+		Complusory misses
+			強迫性失誤、冷開機失誤
+				第一次讀取一定會失誤的狀況
+				prefetching 解決
+		Conflict misses
+			大家搶同一個 Cache 的時候稱之
+				也就是直接對映
+		Capacity misses
+			顧名思義、容量不夠的失誤
+				也就是完全關聯式
+	virtually addressed Cache
+		上述流程的 Cache 吃的是實體位址
+			i.e. physically addressed Cache
+			CPU → 虛擬位址 → TLB → 轉出實體位址 → 快取
+				快取命中
+					資料送回去，結束
+				快取失誤
+					拿實體位址去主記憶體找
+			也就是一定會存取 TLB
+		這邊只是的是吃虛擬位址的快取
+			CPU → 虛擬位址 → 快取
+				快取命中
+					資料送回去，結束
+				快取失誤
+					拿虛擬位址去 TLB 轉出實體位址
+						再去主記憶體找
+			也就是可能不用經過 TLB
+		aliasing 問題
+			對於不同程式共用的 page 而言
+				不同程式各自有不同的邏輯位址
+					不同的邏輯位址對應到快取的不同 Block
+					程式各自存取 Block
+					共用的實體空間的資料被快取到不同的 Cache Block
+						此時程式各修改 Block 就會造成資料不一致
+			physically addressed Cache 沒有此問題
+				都是先去 TLB 轉出實體位址
+					程式之間共用 page
+						共用實體記憶體的 page
+						實體位址一樣
+							就只會抓一份到快取
+			解決
+				virtually index, physically tag
+					張凡說 How 可略
+	Virtual memory
+		概念一樣
+			視主要記憶體為磁碟的快取
+		用語不同
+			block ↔︎ page
+			cache miss ↔︎ page fault
+		設計原則不同
+			避免 I/O 就對了、hit rate 為上
+				fully associative
+				write back
+				LRU
+					(Cache 可 random)
+				large page(block) size
+				page table
+					(Cache 用 index 和 tag 搜尋比對)
+				TLB
+					Translation lookaside buffer
+						就是 page table 的 cache
+		流程
+			記憶體對應到硬碟 swap sapce
+				兩邊都以 page 為單位切分、對應
+				記憶體為快取，儲存部分 swap sapce 之資料
+			CPU 輸出 virtual addr.
+			virtual addr. 依照 page size 決定對應到哪個 page
+				也就是 virtual page number(VPN)
+				同時決定 page offset
+					也就是要存取的 byte 在 page 中的位置
+			先用 VPN 去 TLB 查
+				TLB hit
+					PPN 到手
+						physical page number
+					PPN & page offset 合成得 physical addr.
+						用 physical addr. 存取 Cache
+							Cache hit
+								資料送給 CPU，結束
+							Cache miss
+								再去主記憶體存取資料
+				TLB miss
+					再去 page table 查 PPN
+						page table hit
+							即分頁在記憶體中
+							PPN & page offset 合成得 physical addr.
+						page table miss
+							分頁不在記憶體中
+							page fault 處理
+							簡單來說 page table miss 就沒有人會 hit
+								因為東西不在記憶體
+	多層快取
+		設計理念
+			靠近 CPU 的用越小越快越貴的
+			離 CPU 遠的用越大越慢越便宜的
+		假設兩層
+			L1
+				注重 Hit Time
+					此層寫穿、寫回皆可
+						因為 L1 L2 存取時間差異不大
+			L2
+				注重 Hit rate
+					通常寫回
+						因為相對而言，主記憶體存取時間長
+						延伸
+							vitrual memory
+								一定要寫回
+								page fault 太久
+				要大
+				設計上就是盡少存取主要記憶體
+	快取效能
+		有效 CPI = base CPI + memory stall per instr.
+		有效 CPI = base CPI + cache hit time + miss rate * miss penalty

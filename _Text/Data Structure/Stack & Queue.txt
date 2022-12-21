@@ -1,0 +1,120 @@
+堆疊、佇列
+	堆疊
+		特性
+			先進後出
+			插入刪除皆在頂端
+		應用
+			副程式呼叫
+			遞迴
+			中序轉後序
+			二元樹追蹤
+			圖形 DFS
+			迴文、反序、迷宮等反序的概念
+		製作
+			Array
+				Top 指向後端
+			Link List
+				Top 指向 rear
+		Stack permutation
+			Push/Pop 操作的合法字串輸出
+			括號配對
+			火車進出車庫
+			1/(n+1) * C(2n,n)
+				同時也是 n node 可形成的二元樹個數
+	算數式轉換
+		三種算數式
+			中序式
+				需要來回掃描多次
+					運算元優先權
+					運算元結合性
+			後序式
+				左而右掃一次就好
+			前序式
+				右而左掃一次就好
+					實作上會比後序式多一個 stack 的支援
+		常見計算題之處理
+			括號法 (以 Postfix 為例)(簡便型)
+				1. 加上完整的括號配對
+				2. 運算元取代右側最鄰近的括號
+				3. 去除左括號
+			畫成二元樹再追蹤或計算(萬用型)
+		程式相關
+			算數式
+				Infix to Postfix
+					0. 由左往右掃
+					1. 掃描字串、檢查字元
+						運算元
+							印出
+						右括號
+							Pop 並印出，直到碰到左括號
+						其他
+							重複比較優先權 (while)
+							(字元與堆疊頂端的運算元)
+								大於
+									Push(字元) & Break;
+								不大於
+									Pop() & 印出
+					2. 掃完後
+						Pop Stack & 依序印出
+					本類暫時可略過
+						因為優先權問題略為麻煩
+							運算元之間的優先權
+							Stack 內外優先權也略有區別
+				Postfix 計算
+					0. 由左往右掃
+					1. 掃描字串、檢查字元
+						運算子
+							Push(運算子)
+						其他
+							依照運算元，Pop 適當數量的運算子
+							執行運算
+							運算結果必為運算子、將之 Push
+					2. 掃完後
+						Stack 內的值即為運算結果
+				Prefix 相關
+					Postfix 的例子全部改為右往左即可
+			其他應用
+				括號配對
+					左括號：Push
+					右括號：Pop
+						過程中無法 Pop 表示 Stack 為空
+						也就是括號配對不合法
+					掃完後 Stack 需為空
+						不為空表示不合法
+				迴文判斷
+					類似括號配對
+	Stack Queue 的相互製作
+		Stack 作 Queue
+			用 push/pop 實作 enqueue/dequeue
+		Queue 作 Stack
+			用 enqueue/dequeue 實作 push/pop
+		筆記 p.80~p.81，需再另外熟練
+	佇列
+		特性
+			先進先出
+			插入在尾端、刪除在前端
+		應用
+			有依序、排隊的概念就是了啦
+			圖形 BFS
+			二元樹之 Level-order 追蹤
+		製作
+			Array
+				線性
+				環狀
+					浪費一格
+					完整利用
+						多一個 flag 輔助判斷
+							插入完成後 flag 打開
+							刪除完成後 flag 拔掉
+			Link List
+				單向
+				環狀
+		種類
+			FIFO
+			Priority
+			Double-ended
+			Double-ended Priority
+				用以製作的資料結構有下列幾種
+					min-max Heap
+					Deap
+					SMMH

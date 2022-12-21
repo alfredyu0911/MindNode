@@ -1,0 +1,105 @@
+7. 內積空間
+	內積基本
+		驗證
+			左線性
+			右共軛線性
+			正定
+				自己跟自己內積 > 0
+					也就是是實數
+		|| 向量x ||
+			定義為 (<x,x>)^1/2
+		orthonormal set
+			{ 1/√2, cosx, cos2x, cos3, … }
+				用這個對於積分型的內積可以快很多
+	畢氏定理、柯希不等式
+	Gram-Schimdt 正交化
+		對 { v1, v2, v3, … } 正交化
+			流程
+				令 u1 = v1
+				u2 = v2 - <v2,u1>/<u1,u1> * u1
+				u3 = v3 - <v3,u2>/<u2,u2> * u2 - <v3,u1>/<u1,u1> * u1
+				u4 = 類推
+				最後再把 ui / || ui || 正規化，即可得 orthonormal set
+		記得驗算，兩兩內積檢查是否為 0
+	ＱＲ分解
+		A 為行獨立，則皆可ＱＲ分解
+		Ｑ為 column orthonormal
+		Ｒ為上三角且可逆
+		過程
+			u1 = v1
+			u2 = v2 - k*u1
+			u3 = v3 - m*u2 - n*u1
+				整理得
+					v1 = u1
+					v2 = u2 + k*u1
+					v3 = u3 + m*u2 + n*u1
+						A 行展
+							A = [v1 v2 v3] = [u1 u2 u3]*Ｒ
+							再對 u normalize
+	ker(A) = ker(A^H*A)
+		或 ker(A) = ker(A^T*A)
+		好用
+		證明
+			互相包含
+			會用到內積的 Matrix Form
+				<x,y> = y^H * x
+					或 y^T * x
+	正交投影
+		ProjwV
+			稱 projection of V on W
+			取 { v1, v2, …, vk } 為 W 的一組基底
+			ProjwV = ∑ <v,vi>/<vi,vi> * vi
+	進階型鏡射
+		即 Householder 轉換
+			1. 找鏡射面法向量 u
+			2. 對 x 鏡射為 y
+			3. y = (I-2u*u^T)x
+	線性系統總結
+		Ax = b
+			若唯一解，則解之
+			若無解，則以 least square solution 為近似解
+			若無限多解，求 x ∍ ||x|| 為最小，稱 minimal solution
+				過程略
+				求 Ax = b 的 minimal solution
+					1.  解 AA^Tx = b
+					2. 取 u 為一個解
+					3. A^T*u 即為所求
+	正交補空間
+		S ⊆ V，定義 S⟂ { v ∈ V | <v,s>=0, ∀s∈S }
+			就是所有向量內積都是零
+		S⟂⟂ 不一定會變回自己
+		幾何概念
+			高中數學
+				超平面的法向量
+		kernal, range 相關
+			R(A)⟂ = N(A^T)
+			R(A^T)⟂ = N(A)
+			其他類推
+			一種連鎖律的概念
+	W = CS(A), A:m*n, b:m*1, || Ax - b || is min
+		幾何上大概就是跟 W 垂直的那個向量
+		解 x ↔︎ 解 A^H*Ax = A^H*b
+			稱 normal equation
+				解的時候先檢查 A^H*A 可逆與否
+					若 A 行獨立，可推出 A^H*A 可逆
+					則 normal equation 有唯一解
+					否則有無限多組解
+				normal equation 必有解
+			x 為 Ax = b 的 least square solution
+		ProjCS(A)b
+			就是把 b 投影到 CS(A)
+			CS(A) = column space of A
+			ProjCS(A)b = Ax
+				也就是說
+					ProjCS(A)b = [A(A^T *A)^-1 * A^T] b
+					中括號那串就是正交投影 on R(A)
+		其他類題
+			給座標點，求迴歸線
+				(ai, bi) 代數 R2 上的直線式 y = ax+b
+					得 i 條等式
+					組成 A
+					令 x = (a, b)^T
+					解 Ax = b 的 normal equation
+			ＱＲ
+				A = QR 代入 normal equation
+				解 least square solution 等同解 Rx = Q^T*b

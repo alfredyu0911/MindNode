@@ -1,0 +1,145 @@
+高等樹
+	min-max Heap
+		定義
+			1. min level, max level 交錯
+			2. root 為 min level
+			3. 任何 node 之值為所在子樹的最大值或最小值
+				node 在 max level 則為所在子樹最大值
+				min level 則為最小值
+		操作
+			insert
+				1. 依 complete 性質暫置於最後的下一個
+				2. 檢查置入節點值 X，與其父點的關係
+					即滿足所在 level 的大小關係
+					不滿足則交換
+				3. 從目前 X 所在位置，往上隔一層再驗證一次
+			delete-min
+				1. 砍 root data
+				2. 抓出最後一個節點
+				3. 抓出的值從 root 開始往下調整
+					以下 loop
+					隔代找出最小、並比大小
+						最小直接放入 root
+					沒有隔代，則與子點驗證大小
+						子層一定是 max level，所以找最大的置入
+					沒有子點則直接置入，結束
+		用途/注意事項
+			Doubled-ended priority Queue
+			it’s a complete B.T.
+	Deap (Doubled-ended heap)
+		定義
+			root 無資料
+			root 左子樹為 min-Heap
+			root 右子樹為 max-Heap
+			對應點
+				root 兩個子樹結點各自，編號相同即為對應點
+				右子樹對應點不存在，則往上找父點
+			左子樹的所有點皆 ≦ 其對應點
+		操作
+			insert
+				1. 插入最後一個位置
+				2. 找出對應點，兩者比大小
+					小的 insert min-heap 於左子樹
+					大的 insert max-heap 於右子樹
+			delete
+		用途/注意事項
+			Doubled-ended priority Queue
+			it’s a complete B.T.
+	SMMH
+		root 無資料
+		同一父點的左右子點先檢查
+			左 ≦ 右
+		節點 X 有祖父 GP 的話
+			GP 右子 ≧ X
+			GP 左子 ≦ X
+	Extended B.T.
+		E = I + 2N
+		加權外部路徑長度(WEPL)
+			最小的 WEPL
+				optmail
+					huffman
+			應用
+				編碼
+				最佳合併
+	其他高等樹
+		OBST
+			DP
+			3 ~ 4 個點加上個點加權差異不小的話，有機會列舉硬幹
+		Lefist Heap
+			merge 只要 O(logn)
+				取出最小，最小所在的樹為 A
+				A 左保留，A 右與 B 再 merge
+					loop
+			for all node, 左子樹比右子樹高
+				長相就是左邊一路往下
+		Binomail Heap
+			森林
+			每棵節點數恰為 2^k
+			Bk 恰為兩顆 Bk-1 結合而成
+		Fibonacci Heap
+			除了刪除，其他大概都 O(1)
+	紅黑樹
+		DS 定義
+			link 具紅色或黑色
+		Algo. 定義
+			node 具紅色或黑色
+			root 為黑
+			外部節點視為黑
+			紅色 node 之子點必為黑
+				意義上同路徑上不連續出現兩個紅
+			root 到 leaf 的路徑會經過相同數目的黑節點
+		操作
+			insert
+				先 search for x
+					若有節點的兩個子點都是紅，則換顏色
+						節點改紅
+						子點改黑
+				檢查有無連續紅
+					有的話
+						中間鍵值上拉，標為黑
+						子點標為紅
+						類似 AVL 之 rotation
+				最後才插入 x，並標為紅
+	B tree of order m
+		定義
+			每個節點的 degree 必有 (上限(m/2) ~ m)
+			每個節點可存 m-1 筆資料
+		odere 3
+			degree = 2~3
+			也稱 2-3 tree
+		odere 4
+			degree = 2~4
+			也稱 2-3-4 tree
+				此樹恰可與紅黑樹一一對應轉換
+		操作
+			insert
+				找適當的”節點”，插入鍵值
+				若節點 overflow
+					中間鍵值往上插入父點
+						若父點也 overflow，則繼續往上
+					左右分裂成兩個節點
+			delete
+				略過
+	AVL
+		定義
+			高度平衡的 BST
+				任一節點隻左右子樹，高度差最多 1
+			所有子樹也是 AVL
+			節點平衡係數
+				左子樹高 - 右子樹高
+		操作
+			single rotation
+				RR
+				LL
+			double rotation
+				RL
+				LR
+			基本原則：中間鍵值上拉
+		特性
+			高度 h 的最少節點數
+				具遞迴關係
+					n(h) = n(h-1) + n(n-2) + 1
+						強數學歸納法可證明
+						畫表格疊代數值比較快，除非題目要你解遞迴
+			各種時間複雜度均落在 O(logn)
+				除了追蹤類的

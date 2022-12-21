@@ -1,0 +1,201 @@
+Pipeline、Datapath、效能評估
+	single cycle machine
+		clock cycle 以最長的 指令 決定
+		CPI = 1
+	multiple cycle machine
+		clock cycle 以最長的 stage 決定
+		CPI = 經過的 stage 數
+		平均 CPI = ∑ 指令所需 stage 數 * 指令所佔比例
+	pipeline machine 基礎
+		clock cycle 以最長的 stage 決定
+		完美管線化機器 CPI = 1
+		精確的所需總 cycle 數 = 指令數n + stage數 - 1
+		有效 CPI = 完美 CPI + stall cycles per instr.
+		stage 劃分
+			IF
+				指令擷取
+			ID
+				指令解碼、讀取暫存器
+			EX
+				ALU 執行運算或計算分支目的
+			MEM
+				讀寫記憶體
+			WB
+				寫回暫存器
+		管線化不會改善單一指令的執行時間
+			改善的是整體的 throughput
+	效能評估
+		execution time = (instr. count) * (cycles per instr.) * (cycle time)
+		T = IC * CPI * CycleTime = IC * CPI / ClockRate = …
+	綜合效能評估
+		CPI
+			完美 CPI
+				1
+			所有延遲 pipeline stall
+				危障延遲 per instr.
+					前饋支援下只看 load-use
+						lw% * load-use% * 1 cycle
+					沒有前饋，參考危障處理
+						RAW% * 2 cycle
+				分支延遲 per instr.
+					其中分為 branch 和 jump
+						branch
+							一般
+								branch % * 預測失敗率 * 1 cycle
+							load-use
+								branch % * 預測失敗率 * 2 cycle
+						jump
+							ID 解碼完才知道是 jump
+								100% stall 1 cycle
+			記憶體資料存取延遲 per instr.
+	single cycle machine data path 修正 for pipeline
+		stage 之間加入 pipeline register
+		各個 stage 的控制信號需要送到 pipeline register
+			因為每個 stage 分別被不同的指令使用
+		除了控制信號，rd 暫存器號碼，也需要一併傳遞下去
+			因為在 WB stage 才會用到
+		RegDst 信號與其多工器移到 EX stage 
+			因為信號需要夠過 control unit 解碼後產生
+			基於平衡各個 stage 的延遲時間，所以往後移動
+	pipeline 之 branch 其他處理
+		預測
+			基本
+				BHB
+					Branch history table
+						負責猜跳不跳
+				BTB
+					Branch Target Buffer
+						負責給位置
+						或直接給指令
+			永遠猜跳、永遠猜不跳
+			1-bit 預測
+				錯一次就換
+			2-bit 預測
+				連錯兩次才換
+		延遲分支
+			插入安全指令
+				不影響運算結果的指令
+			安全指令為本來就要執行的
+			形同消除分支指令的額外延遲
+	pipeline 例外處理
+		例外
+			大致流程
+				從發生的 stage 的前面都 flush 掉
+				發生的 stage 的後面讓他執行完
+				儲存 PC 值到 EPC
+				交由 O.S. 處理例外
+				最後再返完 EPC 指向之位置
+		中斷
+		EPC
+			PC for 例外狀況發生指令的下一個
+				一定要下一個
+				不然就一直例外就沒完沒了
+	pipeline Hazard
+		敘述
+			指令不能在下一個週期順利執行
+		檢視工具
+			multiple clock cycle diagram
+		分類
+			structure hazard
+				硬體上的不足
+					e.g.
+						IF 與後面的 MEM 重疊時候
+							因為兩個都是存取記憶體
+						ID 與後面的 WB
+							都是對暫存器存取
+				解決
+					分別使用 instr. memory 和 data memory
+					設定 Register File 前半週期寫、後半讀
+			data hazard
+				一般為 RAW 資料相依問題
+					後面指令需要前面指令的運算結果
+				解決
+					stall
+						前面指令的結果會在 WB 寫入
+						後面指令需要再 ID 讀取站存取
+						stall 2 cycle 可以使兩個指令站在對等的步驟上
+					forwarding (bypassing)
+						一般情況
+							前面的指令會在 EX 運算完成
+							後面指令需要在 EX 開算前取得正確資料
+							不需等到寫回暫存器，直接在 MEM 從管線暫存器把資料送到 EX 的 $rs 或 $rt
+						load-use 情況
+							前面指令的資料會在 MEM 尾才會從記憶體中取得資料
+							後面指令需要在 EX 開算前取得正確資料
+							由 multiple clock cycle diagram 可知百分百救不到
+							後面指令 stall 1 cycle，資料才能從 MEM/EX 的管線暫存器送到 EX
+				偵測
+					1. 前面的指令必須寫入暫存器
+						MemWrite = 1
+							兩個可能的前饋起點
+								EX/MEM
+								MEM/WB
+					2. 寫入的暫存器號碼不為 0
+						RegisterRd ≠ 0
+							0 號接地寫不進去
+							使用 0 號本來就是取得 0 的數值
+							前饋送過去，運算就錯了
+					3. 前面的目的，與目前的來源相同
+						前面.RegisterRd = ID/EX.RegisterRs
+						前面.RegisterRd = ID/EX.RegisterRt
+					4. 對於指令序 1, 2, 3，
+					1＆3 有 hazard 只發生在 2＆3 沒有 hazard
+						不然 1 跟 2 都送資料去救 3，阿 3 是要接哪一個
+						EX/MEM.RegisterRd ≠ ID/EX.RegisterRs
+						EX/MEM.RegisterRd ≠ ID/EX.RegisterRt
+				stall 處理
+					以 load-use 的情況為例
+					位於 ID 的 data hazard unit 偵測到之後要暫停
+						1. 把 0 送到 ID/EX 管線暫存器的控制信號線部分
+							i.e. 信號清除成 0
+								意義上就變成 nop
+								實際上還是原本要進來的指令，只是不讀不寫而已
+								也就是暫存器號碼都還在 (有考過)
+						2. 把 IF/ID 的管線暫存器＆ PC 卡住，下個指令的資料不會進來
+						multiple clock cycle diagram
+							被卡住的指令，重複所在 stage 即可
+			control hazard
+				原始流程
+					EX 算完跳躍目的
+					MEM 決定跳躍與否
+				原始處理
+					control hazard
+						branch 位於 MEM
+							前面的是 IF, ID, EX
+							已經有 3 個指令進入管線
+						猜錯的話就要清掉三個指令
+							3 個 clock 的額外延遲
+					data hazard
+						EX 開算前要取得正確的值
+						也就是同一般資料危障、load-use
+				修正處理
+					移到 ID “決定” 跳躍與否
+						跳不跳取決於兩個暫存器是否相等 (beq, bne)
+						不使用 ALU、使用 XOR 陣列直接在 register file 後面判斷是否相等
+							ALU 減法還要等進位
+							快多了
+						運算結果等 Control unit 解碼完即可知跳躍與否
+					control hazard
+						branch 位於 ID
+							前面的是 IF
+						猜錯的話就要清掉一個指令
+							1 個 clock 的額外延遲
+					data hazard
+						ID 就要取得正確的暫存器數值
+							沒有前饋的話
+								就一定要等到前面 WB 才可以
+							有前饋的話
+								一般情況
+									前面的運算結果進到 EX/MEM 的管線暫存器後，才能救後面
+									也就是前面的站在 MEM
+									branch 要 stall 1 clock 才救得到
+								load-use 情況
+									lw 站在 WB 才救得到後面
+									branch 要 stall 2 clock
+					flush
+						branch 在 ID
+						當需要清除指令(用途同 stall)
+							只要把 ID/EX 管線暫存器整根清成 0
+							此時跟前面的 stall 略微不同
+								此時的 nop 實質上是 32 顆 0
+								即 sll $0, $0, $0
