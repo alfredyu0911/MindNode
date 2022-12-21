@@ -1,29 +1,16 @@
-# MindNode Note
-This note is presentation as mind map by using [MindNode](https://mindnode.com/).<br>
-*這個筆記是使用 [MindNode](https://mindnode.com/) 這套軟體，以心智圖的方式呈現*<br>
-<br>
-It is use to the Graduate School Entrance Examination in Compiter Science in Taiwan<br>
-*筆記用於台灣資訊工程領域的研究所入學考試*<br>
-<br>
-Basically it is combined from many other resources and understanding of myself, hence there is no guarantee of the correctness.<br>
-*基本上它結合了數個資源以及我個人的理解，因此並不保證其正確性*<br>
-<br>
-Also, the content of this note has nothing to do with its importance, it might just somthing I think worth to write down<br>
-*另外，筆記中的內容不代表其重要性，可能只是一些我認為值得記錄下來的東西*<br>
-<br>
-I might be able to keep maintain this note, so you're welcome to leave any opinion.<br>
-*我可能可以繼續維護它，所以非常歡迎留下任何意見*<br>
-<br>
-Recommend use it on your piecemeal time.<br>
-*本筆記推薦在零碎時間使用*<br>
-<br>
-For those user who are not using **macOS** or **iOS** or don't want to buy [MindNode](https://mindnode.com/), you can find the [FreeMind](https://zh.wikipedia.org/wiki/FreeMind) file or PDF file which is export from [MindNode](https://mindnode.com/), under the following location <br>
-*對於不是 **macOS**、**iOS** 使用者或者不想購買 [MindNode](https://mindnode.com/) 的人，你可以在以下路徑找到從 [MindNode](https://mindnode.com/) 轉換而成的 [FreeMind](https://zh.wikipedia.org/wiki/FreeMind)* 檔或 PDF 檔<br>
->/_FreeMind/<br>/_PDF/
+# Introduction
+* It can be used for graduate-school examinations of CS related departments.
+* This note is only my personal learning experience, documented as a mind map, using [MindNode](https://mindnode.com/).
+  * Again, this is just my personal understanding, contents in this note are not always important nor guaranteed to be 100% correct.
+  * One thing I can assure is that making this note helps me to memorize, reconstruct and understand those topics.
 
-<!-- --><br>
-The file can be also export to following file, please contact me if you need.<br>
-*另外也可以另外輸出成以下檔案，需要的話請聯絡我*<br>
-<img src="https://i.imgur.com/6JFMEO6.jpg"/><br>
-<br>
-You can contact me by sending email to alfredyu0911@gmail.com <br>
+# Usage
+* For people who don't have the license of [MindNode](https://mindnode.com/), there are PDF/FreeMind/Text files available.
+  * Here are some other formats ![](https://i.imgur.com/6JFMEO6.jpg), please feel free to contact me for those other formats.
+  * Note that reading those notes by pure text is not recommended since some of them are images and not be able to be exported as pure text. Also those maps are constructed by a certain relation/connection, which I doubt that the exported pure text can represent the same meaning.
+
+# Maintain
+* This mind map note will not be further maintained.
+
+# Contact
+* alfredyu0911@gmail.com
